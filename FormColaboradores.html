@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Chama o arquivo css -->
+    <?!=Chamar("EstilosCSS")?>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+  </head>
+  <body>
+
+    <div id="CaixaMsg">
+      <div>
+        <div id="TituloMsg"></div>
+        <div id="CorpoMsg"></div>
+        <div id="RodapeMsg"></div>
+      </div>
+    </div>
+
+    <fieldset>
+     <legend>Selecione abaixo um agente público para visualizar as informações</legend>
+
+     <div class="row">
+      
+        <div id="divLista">
+          <label id="labelListaColaborador">Lista dos Agentes Públicos</label>
+          <select id="ListaColaborador" class="browser-default">
+          <option value="" disabled selected>Selecione um Agente Público</option>
+            <? for (let i = 0; i < listaColaborador.length; i++) {?>
+              <option><?=listaColaborador[i];?></option>
+
+            <?}?>
+          </select>
+        </div>
+      
+      </div>
+      </fieldset>
+
+      <fieldset>
+      <legend>Campos para adicionar ou editar funcionários</legend>
+        <div class="row">
+          <div class="input-field col s6">
+            <i class="material-icons prefix" >perm_identity</i>
+            <input type="text" id="Colaborador" oninput="CaixaAlta(event)">
+            <label for="Colaborador" >Nome do Agente Público *</label>
+          </div>
+          
+          <div class="input-field col s6">
+            <i class="material-icons prefix">perm_identity</i>
+            <input type="number" id="Matricula" >
+            <label for="Matricula">Matrícula *</label>
+          </div>
+
+          <div>
+            <label>Selecione um Cargo</label>
+            <select id="listaCargo" class="browser-default">
+            <option value="" disabled selected> Escolha um Agente Público</option>
+              <? for (let i = 0; i < listaCargo.length; i++) {?>
+                <option><?=listaCargo[i];?></option>
+
+              <?}?>
+            </select>
+          </div>
+
+          <div>
+            <label>Selecione uma Lotação</label>
+            <select id="listaLotacao" class="browser-default">
+            <option value="" disabled selected>Selecione uma Lotação</option>
+              <? for (let i = 0; i < listaLotacao.length; i++) {?>
+                <option><?=listaLotacao[i];?></option>
+
+              <?}?>
+            </select>
+          </div>
+
+
+        <div class="input-field col s6">
+          <i class="material-icons prefix">smartphone</i>
+          <input type="tel" id="Telefone"  keydown = "MascaraTelefone(this)" minlength="16" maxlength="16">
+          <label for="Telefone">Telefone *</label>
+        </div>
+
+        <div class="input-field col s6">
+          <i class="material-icons prefix">email</i>
+          <input type="tel" id="Email" >
+          <label for="Email">E-mail Institucional *</label>
+        </div>
+      </div>
+    </fieldset>
+
+
+    <div class="row">
+
+      <button class="btn waves-effect waves-light espacamento-botoes" id="btnSalvar">Salvar
+          <i class="material-icons right">save</i>
+      </button>
+
+      <button class="btn waves-effect waves-light espacamento-botoes" id="btnLimpar">Limpar
+          <i class="material-icons right">close</i>
+      </button>
+
+      <button class="btn waves-effect waves-light espacamento-botoes" id="btnEditar">Editar
+          <i class="material-icons right">edit</i>
+      </button>
+
+      <button class="btn waves-effect waves-light espacamento-botoes" id="btnFechar">Fechar
+          <i class="material-icons right">close</i>
+      </button>
+    </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <!-- Chama o script js -->
+  <?!=Chamar("FormColaboradores-js")?>
+  </body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Chama o arquivo css -->
+    <?!=Chamar("EstilosCSS")?>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+  </head>
+  <body>
+    <div id="CaixaMsg">
+      <div>
+        <div id="TituloMsg"></div>
+        <div id="CorpoMsg"></div>
+        <div id="RodapeMsg"></div>
+      </div>
+    </div>
+
+    <fieldset>
+    <legend>Selecione os campos abaixo para pesquisar dados dos documentos</legend>
+    <div id = "divObjetos" class = "row">
+         <div class = "input-field col s2">
+
+          <p id = "">Acervos</p>
+          <select id = "pesquisaListaAcervo" class = "browser-default">
+
+            <option value="" disabled selected>Selecione um acervo</option>
+          <!-- Carrega a lista através da função da MacrosDocumentos, executando js -->
+          <? for (let i = 0; i < pesquisaListaAcervo.length; i++) {?>
+            <option><?=pesquisaListaAcervo[i];?></option>
+
+          <?}?>
+        </select>
+      </div>
+
+      <div class="input-field col s2">
+        <p>Selecione uma espécie documental</p>
+          <select id = "pesquisaListaEspecie" class = "browser-default">
+
+            <option value="" disabled selected>Selecione uma espécie documental</option>
+          </select>
+      </div>
+
+      <div class="input-field col s2">
+        <p id = "">Selecione a primeira codificação</p>
+          <select id = "pesquisaListaIdentificador1" class = "browser-default">
+
+            <option value="" disabled selected>Selecione a primeira codificação</option>
+          </select>
+      </div>
+
+
+      <div class="input-field col s2">
+        <p id = "">Selecione a segunda codificação</p>
+          <select id = "pesquisaListaIdentificador2" class = "browser-default">
+
+            <option value="" disabled selected>Selecione a segunda codificação</option>
+          </select>
+      </div>
+
+      <div class="input-field col s2">
+        <p id = "">Selecione um documento</p>
+          <select id = "pesquisaDocumento" class = "browser-default">
+
+            <option value="" disabled selected>Selecione o documento</option>
+          </select>
+      </div>
+
+    </div>
+    </fieldset>
+
+    <fieldset>
+    <legend>Campos de preenchimento para cadastro e edição de documentos</legend>
+    <div class="row" >
+
+      <div class="input-field col s2 flex-column">
+        <p>Lista dos acervos</p>
+        <select id="ListaAcervos" class="browser-default">
+
+        <option value="" disabled selected>Selecione um acervo</option>
+          <? for (let i = 0; i < listaAcervo.length; i++) {?>
+            <option><?=listaAcervo[i];?></option>
+
+          <?}?>
+        </select>
+        
+      </div>
+
+      <div class="input-field col s2">
+        <i class="material-icons prefix" >add</i>
+        <input type="text" id="especieDocumental" oninput="CaixaAlta(event)">
+        <label for="especieDocumental" >Espécie documental<label>
+      </div>
+
+      <div class="input-field col s2">
+        <i class="material-icons prefix" >add</i>
+        <input type="text" id="identificador1" oninput="CaixaAlta(event)">
+        <label for="identificador1" >Identificador 1</label>
+      </div>
+
+      <div class="input-field col s2">
+        <i class="material-icons prefix" >add</i>
+        <input type="text" id="identificador2" oninput="CaixaAlta(event)">
+        <label for="identificador2" >Identificador 2</label>
+      </div>
+
+      <div class="input-field col s4">
+        <i class="material-icons prefix" >add</i>
+        <input type="text" id="documento" oninput="CaixaAlta(event)">
+        <label for="documento" >Documento</label>
+      </div>
+
+      <div class="input-field col s2">
+        <i class="material-icons prefix" >add</i>
+        <input type="text" id="periodo" oninput="CaixaAlta(event)">
+        <label for="periodo" >Periodo</label>
+      </div>
+
+      <div class="input-field col s2">
+        <i class="material-icons prefix" >add</i>
+        <input type="text" id="quantidade" oninput="CaixaAlta(event)" >
+        <label for="quantidade" >Quantidade/volume</label>
+      </div>
+
+      <div class="input-field col s2">
+        <i class="material-icons prefix" >add</i>
+        <input type="text" id="local" oninput="CaixaAlta(event)">
+        <label for="local" >Local</label>
+      </div>
+
+      <div class="input-field col s4">
+        <i class="material-icons prefix" >add</i>
+        <input type="text" id="observacao" oninput="CaixaAlta(event)" >
+        <label for="observacao" >Observação</label>
+      </div>
+    </div>
+      
+
+    </div>
+    </fieldset>
+
+     <div class="row">
+
+      <button class="btn waves-effect waves-light espacamento-botoes" id="btnSalvar">Salvar
+          <i class="material-icons right">save</i>
+      </button>
+
+      <button class="btn waves-effect waves-light espacamento-botoes" id="btnLimpar">Limpar
+          <i class="material-icons right">close</i>
+      </button>
+
+      <button class="btn waves-effect waves-light espacamento-botoes" id="btnEditar">Editar
+          <i class="material-icons right">edit</i>
+      </button>
+
+      <button class="btn waves-effect waves-light espacamento-botoes" id="btnFechar">Fechar
+          <i class="material-icons right">close</i>
+      </button>
+    </div>
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <!-- Chama o script js -->
+  <?!=Chamar("FormDocumentos-js")?>
+  </body>
+</html>

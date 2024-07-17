@@ -1,0 +1,246 @@
+<script>
+  // Salvando os campos vindos do FormColaboradores.html
+  var CampoListaColaborador = document.getElementById("ListaColaborador");
+  var CampoNomeColaborador = document.getElementById("Colaborador");
+  var CampoMatricula = document.getElementById("Matricula");
+  var CampoListaCargo = document.getElementById("listaCargo");
+  var CampoListaLotacao = document.getElementById("listaLotacao");
+  var CampoTelefone = document.getElementById("Telefone");
+  var CampoEmail = document.getElementById("Email");
+
+  // Para as mensagens das janelas dos botões
+  var CaixaMsg = document.getElementById("CaixaMsg")
+  var TituloMsg = document.getElementById("TituloMsg")
+  var CorpoMsg = document.getElementById("CorpoMsg")
+  var RodapeMsg = document.getElementById("RodapeMsg")
+
+  let BtnFechar = '<button class = "orange" onclick = "Fechar()" style = "cursor:pointer">'+
+  '<b><font color = "black" size = "5px">Fechar</font></b></button>';
+
+  function caixaMsgbox(m){
+    CaixaMsg.style.display = "block";
+    TituloMsg.innerHTML = "AVISO";
+    CorpoMsg.innerHTML = m; 
+    RodapeMsg.innerHTML = BtnFechar;
+  }
+  
+  function Fechar(){
+    CaixaMsg.style.display = "none";
+  }
+
+  // Função do botão limpar
+  document.getElementById("btnLimpar").addEventListener("click", Limpar);
+
+  function Limpar(){
+    CampoListaColaborador.value = "";
+    CampoNomeColaborador.value = "";
+    CampoTelefone.value = "";
+    CampoMatricula.value = "";
+    CampoListaCargo.value = "";
+    CampoListaLotacao.value = "";
+    CampoEmail.value = "";
+
+    // Atualização da lista dos colaboradores
+    AtualizarColaboradores()
+    M.updateTextFields();
+    }
+ 
+  // Função para o botão salvar
+
+    document.getElementById("btnSalvar").addEventListener("click", SalvarColaborador);
+
+    function SalvarColaborador () {
+      var Colaborador = CampoNomeColaborador.value;
+      var Matricula = CampoMatricula.value;
+      var ListaCargo = CampoListaCargo.value;
+      var ListaLotacao = CampoListaLotacao.value;
+      var Telefone = CampoTelefone.value;
+      var Email = CampoEmail.value;
+    
+    // Tirando espaçamentos
+      var Colaborador = Colaborador.trim();
+      var Matricula = Matricula.trim();
+      var Email = Email.trim();
+      
+
+        // Condição para preenchimento obrigatório dos dados
+      if (Colaborador == "" || Matricula == "" || ListaCargo == "" || ListaLotacao == "" || Telefone == "" || Email == "") {
+        
+        let m = "Precisa preencher todos os campos!"
+        caixaMsgbox(m);
+        return false;
+      }
+      
+      let Dados ={
+            Colaborador: Colaborador,
+            Matricula: Matricula,
+            ListaCargo: ListaCargo,
+            ListaLotacao: ListaLotacao,
+            Telefone: Telefone,
+            Email: Email,
+          };
+
+          // A função irá para o arquivo .gs
+          google.script.run.withSuccessHandler(Retorno).SalvarColaborador(Dados);
+
+          function Retorno(r) {
+            let m = r;
+            caixaMsgbox(m);
+            // Se registrado com sucesso, irá limpar os dados posteriormente
+            if(r == "Funcionário registrado com sucesso!") {
+              Limpar();
+            }
+          }
+        }
+
+  // Função para retornar caixa alta
+  function CaixaAlta(e){
+    var ss = e.target.selectionStart;
+    var se = e.target.selectionEnd;
+
+    e.target.value = e.target.value.toUpperCase();
+
+    e.target.selectionStart = ss;
+    e.target.selectionEnd = se;
+  }
+
+
+  // Função para o preenchimento dos campos ao selecionar o nome de um colaborador
+  CampoListaColaborador.addEventListener("input", Pesquisar);
+
+  function Pesquisar() {
+    let NomeColaborador = CampoListaColaborador.value;
+
+    google.script.run.withSuccessHandler(Retorno).PesquisarColaborador(NomeColaborador);
+
+    function Retorno(r) {
+      if (r == "Agente Público não encontrado!") {
+        Limpar();
+        var m = r;
+        caixaMsgbox(m);
+        return false;
+      }
+
+      CampoNomeColaborador.value = r[0];
+      CampoMatricula.value = r[1];
+      CampoListaCargo.value = r[2];
+      CampoListaLotacao.value = r[3];
+      CampoTelefone.value = r[4];
+      CampoEmail.value = r[5];
+      
+      M.updateTextFields();
+    }
+  }
+
+
+  // Função para editar informações dos colaboradores
+  document.getElementById("btnEditar").addEventListener("click", Editar);
+
+  function Editar() {
+    var ListaColaborador = CampoListaColaborador.value;
+    var Colaborador = CampoNomeColaborador.value;
+    var Matricula = CampoMatricula.value;
+    var ListaCargo = CampoListaCargo.value;
+    var ListaLotacao = CampoListaLotacao.value;
+    var Telefone = CampoTelefone.value;
+    var Email = CampoEmail.value;
+
+    var Colaborador = Colaborador.trim();
+    var Matricula = Matricula.trim();
+    var Email = Email.trim();
+
+    // A segunda condição abaixo está puxando do select do listaPesquisador 
+    if(ListaColaborador == "" || ListaColaborador == "Selecione um Agente Público") {
+
+      var m = "Precisa selecionar Agente Público na lista!"
+      caixaMsgbox(m);
+      return false;
+
+    }
+
+    if(Colaborador == "" || Matricula == "" || ListaCargo == "" || ListaLotacao == "" || Telefone == "") {
+      var m = "Precisa preencher todos os campos!"
+      caixaMsgbox(m);
+      return false;
+    }
+
+    var Dados = {
+            ListaColaborador: ListaColaborador,
+            Colaborador: Colaborador,
+            Matricula: Matricula,
+            ListaCargo: ListaCargo,
+            ListaLotacao: ListaLotacao,
+            Telefone: Telefone,
+            Email: Email,
+    }
+
+    google.script.run.withSuccessHandler(Retorno).EditarColaborador(Dados);
+
+    function Retorno(r) {
+      if(r != "Agente Público não encontrado!") {
+        Limpar();
+      }
+        var m = r;
+        caixaMsgbox(m);
+
+    }
+  }
+
+  // Função para máscara de telefone
+    CampoTelefone.addEventListener('keydown', MascaraTelefone);
+    function MascaraTelefone(e) {
+
+      let Tel = CampoTelefone.value;
+      if(Tel.length == 1){
+        CampoTelefone.value = "(" + Tel;
+        return true;
+      }
+      if(Tel.length == 3){
+        CampoTelefone.value = Tel + ") ";
+        return true;
+      }
+
+     if(Tel.length == 6){
+        CampoTelefone.value = Tel + " ";
+        return true;
+      }
+
+      if(Tel.length == 11){
+        CampoTelefone.value = Tel + "-";
+        return true;
+      }
+    }
+
+  // Fechar janela
+  document.getElementById("btnFechar").addEventListener("click", FecharJanela);
+  function FecharJanela() {
+    google.script.host.close();
+  }
+
+ // Função para atualizar automaticamente a lista dos colaboradores no primeiro campo
+function AtualizarColaboradores() {
+  while (CampoListaColaborador.length) {
+    CampoListaColaborador.remove(0);
+  }
+  var NovaOpcao = document.createElement("option");
+  var Texto = document.createTextNode("Selecione um Agente Público");
+  NovaOpcao.appendChild(Texto);
+  CampoListaColaborador.insertBefore(NovaOpcao, CampoListaColaborador.lastChild);
+
+  CampoListaColaborador.options[0].disabled = true; // Corrigir esta linha
+
+  google.script.run.withSuccessHandler(Retorno).AtualizarListaColaboradores();
+
+  function Retorno(colaboradores) {
+    colaboradores.forEach(function(r) {
+      var NovaOpcao = document.createElement("option");
+      var Texto = document.createTextNode(r[0]);
+      NovaOpcao.appendChild(Texto);
+      CampoListaColaborador.insertBefore(NovaOpcao, CampoListaColaborador.lastChild);
+    });
+  }
+}
+
+
+
+</script>

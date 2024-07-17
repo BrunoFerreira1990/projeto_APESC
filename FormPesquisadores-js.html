@@ -1,0 +1,547 @@
+<script>
+// Salvando as informações na tabela
+  var CampoListaPesquisador = document.getElementById("listaPesquisador");
+  var CampoPesquisaCpf = document.getElementById("CpfPesquisador");
+  var CampoIdPesquisador = document.getElementById("idPesquisador");
+  var CampoDataRegistro = document.getElementById("dataRegistro");
+  var CampoPesquisador = document.getElementById("nomePesquisador");
+  var CampoNasc = document.getElementById("dataNasc");
+  var CampoSexo = document.getElementById("sexo");
+  var CampoCPF = document.getElementById("cpf");
+  var CampoNacionalidade = document.getElementById("nacionalidade");
+  var CampoTelefone = document.getElementById("telefone");
+  var CampoEmail = document.getElementById("email");
+  var CampoEndereco = document.getElementById("endereco");
+  var CampoNumCasa = document.getElementById("numCasa");
+  var CampoComplemento = document.getElementById("complemento");
+  var CampoBairro = document.getElementById("bairro");
+  var CampoCidade = document.getElementById("cidade");
+  var CampoEstado = document.getElementById("estado");
+  var CampoFormacao = document.getElementById("formacao");
+  var CampoInstituicao = document.getElementById("instituicao");
+  var CampoCurso = document.getElementById("curso");
+  var CampoProfissao = document.getElementById("profissao");
+  var CampoAssunto = document.getElementById("assunto");
+  var CampoFinalidade = document.getElementById("finalidade");
+  var CampoPeriodo = document.getElementById("periodoEstudo");
+  var CampoAreaTrabalho = document.getElementById("areaTrabalho")
+  var CampoObservacoes = document.getElementById("observacoes")
+
+  // Para as mensagens das janelas dos botões
+    let CaixaMsg = document.getElementById("CaixaMsg")
+    let TituloMsg = document.getElementById("TituloMsg")
+    let CorpoMsg = document.getElementById("CorpoMsg")
+    let RodapeMsg = document.getElementById("RodapeMsg")
+
+    let BtnFechar = '<button class = "orange" onclick = "Fechar()" style = "cursor:pointer">'+
+    '<b><font color = "black" size = "5px">Fechar</font></b></button>';
+
+    function caixaMsgbox(m){
+    CaixaMsg.style.display = "block";
+    TituloMsg.innerHTML = "AVISO";
+    CorpoMsg.innerHTML = m; 
+    RodapeMsg.innerHTML = BtnFechar;
+    }
+    
+    function Fechar(){
+      CaixaMsg.style.display = "none";
+    }
+
+    // Função para o botão de fechar a janela de cadastro
+    document.getElementById("btnFechar").addEventListener("click", FecharJanela);
+    function FecharJanela() {
+      google.script.host.close();
+    }
+
+    // Funções para o botão de excluir
+    // Função para a caixa de mensagem
+    function MsgBoxExcluir(){
+
+        CaixaMsg.style.display = "block";
+        TituloMsg.innerHTML = "AVISO";
+        CorpoMsg.innerHTML = "DESEJA REALMENTE EXCLUIR?";
+        var BtnSim = '<button class = "green" onclick = "Excluir()" style = "cursor:pointer">'+
+        '<b><font color = "black" size = "5px">Sim</font></b></button>';
+        var BtnNao = '<button class = "red" onclick = "Fechar()" style = "cursor:pointer">'+
+        '<b><font color = "black" size = "5px">Não</font></b></button>';
+        RodapeMsg.innerHTML = BtnSim + BtnNao;
+
+  }
+
+    // Função para a ação de excluir
+  function Excluir(){
+
+  let ListaPesquisador = CampoListaPesquisador.value;
+
+    if(ListaPesquisador == "" || ListaPesquisador == "Escolha um Pesquisador"){
+      var m = "Cancelado! Campo de lista de pesquisadores não pode estar vazio.";
+      caixaMsgbox(m);
+      return false;
+    }
+    google.script.run.withSuccessHandler(Retorno).ExcluirPesquisador(ListaPesquisador);
+
+    function Retorno(r){
+      if(r == "Excluído com sucesso!"){
+        Limpar();
+      }
+      var m = r;
+      caixaMsgbox(m);
+  }
+}
+
+    // fução para o botão limpar
+    document.getElementById("btnLimpar").addEventListener("click", Limpar);
+
+    function Limpar(){
+      CampoListaPesquisador.value = "";
+      CampoPesquisaCpf.value = "";
+      CampoIdPesquisador.value = "";
+      CampoDataRegistro.value = "";
+      CampoPesquisador.value = "";
+      CampoNasc.value = "";
+      CampoSexo.value = "";
+      CampoCPF.value = "";
+      CampoNacionalidade.value = "";
+      CampoTelefone.value = "";
+      CampoEmail.value = "";
+      CampoEndereco.value = "";
+      CampoNumCasa.value = "";
+      CampoComplemento.value = "";
+      CampoBairro.value = "";
+      CampoCidade.value = "";
+      CampoEstado.value = "";
+      CampoFormacao.value = "";
+      CampoInstituicao.value = "";
+      CampoCurso.value = "";
+      CampoProfissao.value = "";
+      CampoAssunto.value = "";
+      CampoFinalidade.value = "";
+      CampoPeriodo.value = "";
+      CampoAreaTrabalho.value = "";
+      CampoObservacoes.value = "";
+      
+      // Para a caixa de texto ao clicar no botão
+      M.updateTextFields();
+      // var m = "TESTE!";
+      // caixaMsgbox(m);
+
+      // AtualizarPesquisador();
+    }
+
+    // Função para o botão salvar
+
+    document.getElementById("btnSalvar").addEventListener("click", SalvarPesquisador);
+
+    function SalvarPesquisador () {
+      var Pesquisador = CampoPesquisador.value;
+      var Nascimento = CampoNasc.value;
+      var Sexo = CampoSexo.value;
+      var Cpf = CampoCPF.value;
+      var Nacionalidade = CampoNacionalidade.value;
+      var Telefone = CampoTelefone.value;
+      var Email = CampoEmail.value;
+      var Endereco = CampoEndereco.value;
+      var NumCasa = CampoNumCasa.value;
+      var Complemento = CampoComplemento.value;
+      var Bairro = CampoBairro.value;
+      var Cidade = CampoCidade.value;
+      var Estado = CampoEstado.value;
+      var Formacao = CampoFormacao.value;
+      var Instituicao = CampoInstituicao.value;
+      var Curso = CampoCurso.value;
+      var Profissao = CampoProfissao.value;
+      var Assunto = CampoAssunto.value;
+      var Finalidade = CampoFinalidade.value;
+      var PeriodoEstudo = CampoPeriodo.value;
+      var AreaTrabalho = CampoAreaTrabalho.value;
+      var Observacoes = CampoObservacoes.value;
+
+      // Limpando os espaços em volta das strings
+      var Pesquisador = Pesquisador.trim();
+      var Email = Email.trim();
+      var Endereco = Endereco.trim();
+      var NumCasa = NumCasa.trim();
+      var Complemento = Complemento.trim();
+      var Bairro = Bairro.trim();
+      var Cidade = Cidade.trim();
+      var Instituicao = Instituicao.trim();
+      var Curso = Curso.trim();
+      var Profissao = Profissao.trim();
+      var Assunto = Assunto.trim();
+      var Finalidade = Finalidade.trim();
+      var Observacoes = Observacoes.trim();
+
+        // Condição para preenchimento obrigatório dos dados
+      if (Pesquisador == "" || Sexo == "" || Cpf == "" || Telefone == "" || Email == "" || Endereco == "" || NumCasa == "" || Bairro == "" || Cidade == "" || Estado == "" ||  Profissao == "" || Assunto == "" || Finalidade == "") {
+        
+        let m = "Precisa preencher todos os campos obrigatórios!"
+        caixaMsgbox(m);
+        return false;
+      }
+      
+  let Dados ={
+        Pesquisador: Pesquisador,
+        Nascimento: Nascimento,
+        Sexo: Sexo,
+        Cpf: Cpf,
+        Nacionalidade: Nacionalidade,
+        Telefone: Telefone,
+        Email: Email,
+        Endereco: Endereco,
+        NumCasa: NumCasa,
+        Complemento: Complemento,
+        Bairro: Bairro,
+        Cidade: Cidade,
+        Estado: Estado,
+        Formacao: Formacao,
+        Instituicao: Instituicao,
+        Curso: Curso,
+        Profissao: Profissao,
+        Assunto: Assunto,
+        Finalidade: Finalidade,
+        PeriodoEstudo: PeriodoEstudo,
+        AreaTrabalho: AreaTrabalho,
+        Observacoes: Observacoes,
+      };
+      // A função irá para o arquivo .gs
+      google.script.run.withSuccessHandler(Retorno).SalvarPesquisador(Dados);
+
+      function Retorno(r) {
+        let m = r;
+        caixaMsgbox(m);
+        // Se registrado com sucesso, irá limpar os dados posteriormente
+        if(r == "Pesquisador registrado com sucesso!") {
+          Limpar();
+        }
+      }
+    }
+
+
+  // Máscara para o telefone
+    CampoTelefone.addEventListener('keydown', MascaraTelefone);
+    function MascaraTelefone(e) {
+
+      let Tel = CampoTelefone.value;
+      if(Tel.length == 1){
+        CampoTelefone.value = "(" + Tel;
+        return true;
+      }
+      if(Tel.length == 3){
+        CampoTelefone.value = Tel + ") ";
+        return true;
+      }
+
+     if(Tel.length == 6){
+        CampoTelefone.value = Tel + " ";
+        return true;
+      }
+
+      if(Tel.length == 11){
+        CampoTelefone.value = Tel + "-";
+        return true;
+      }
+    }
+  
+  // Máscara para o cpf
+    CampoCPF.addEventListener('keydown', MascaraCpf);
+
+    function MascaraCpf(e){
+
+      let CPF = CampoCPF.value;
+      if(CPF.length == 3){
+        CampoCPF.value = CPF + ".";
+        return true;
+      }
+      if(CPF.length == 7){
+        CampoCPF.value = CPF + ".";
+        return true;
+      }
+      if(CPF.length == 11){
+        CampoCPF.value = CPF + "-";
+        return true;
+      }
+    }
+
+     // Máscara para o cpf
+    CampoPesquisaCpf.addEventListener('keydown', MascaraPesquisaCpf);
+
+    function MascaraPesquisaCpf(e){
+
+      let CPF = CampoPesquisaCpf.value;
+      if(CPF.length == 3){
+        CampoPesquisaCpf.value = CPF + ".";
+        return true;
+      }
+      if(CPF.length == 7){
+        CampoPesquisaCpf.value = CPF + ".";
+        return true;
+      }
+      if(CPF.length == 11){
+        CampoPesquisaCpf.value = CPF + "-";
+        return true;
+      }
+    }
+
+
+      // Máscara para a data de nascimento
+    CampoNasc.addEventListener('keydown', MascaraDataNascimento);
+
+    function MascaraDataNascimento(e){
+
+      let DataNascimento = CampoNasc.value;
+      if(DataNascimento.length == 2){
+        CampoNasc.value = DataNascimento + "/";
+        return true;
+      }
+      if(DataNascimento.length == 5){
+        CampoNasc.value = DataNascimento + "/";
+        return true;
+      }
+    }
+
+  // Máscara para a data do registro
+   CampoDataRegistro.addEventListener('keydown', MascaraDataRegistro);
+
+    function MascaraDataRegistro(e){
+
+      let DataRegistro = CampoDataRegistro.value;
+      if(DataRegistro.length == 2){
+        CampoDataRegistro.value = DataRegistro + "/";
+        return true;
+      }
+      if(DataRegistro.length == 5){
+        CampoDataRegistro.value = DataRegistro + "/";
+        return true;
+      }
+    }
+   
+
+  // Função para deixar as letras em caixa alta
+  function CaixaAlta(e){
+    var ss = e.target.selectionStart;
+    var se = e.target.selectionEnd;
+
+    e.target.value = e.target.value.toUpperCase();
+
+    e.target.selectionStart = ss;
+    e.target.selectionEnd = se;
+  }
+
+  // Função para o preenchimento dos campos ao selecionar o nome de um pesquisador
+  CampoListaPesquisador.addEventListener("change", Pesquisar);
+
+  function Pesquisar() {
+    let NomePesquisador = CampoListaPesquisador.value;
+
+    google.script.run.withSuccessHandler(Retorno).PesquisarPesquisador(NomePesquisador);
+
+    function Retorno(r) {
+      if (r == "Pesquisador não encontrado!") {
+        Limpar();
+        var m = r;
+        caixaMsgbox(m);
+        return false;
+      }
+
+      CampoIdPesquisador.value = r[0];
+      CampoDataRegistro.value = r[1];
+      CampoPesquisador.value = r[2];
+      CampoNasc.value = r[3];
+      CampoSexo.value = r[4];
+      CampoCPF.value = r[5];
+      CampoNacionalidade.value = r[6];
+      CampoTelefone.value = r[7];
+      CampoEmail.value = r[8];
+      CampoEndereco.value = r[9];
+      CampoNumCasa.value = r[10];
+      CampoComplemento.value = r[11];
+      CampoBairro.value = r[12];
+      CampoCidade.value = r[13];
+      CampoEstado.value = r[14];
+      CampoFormacao.value = r[15];
+      CampoInstituicao.value = r[16];
+      CampoCurso.value = r[17];
+      CampoProfissao.value = r[18]
+      CampoAssunto.value = r[19];
+      CampoFinalidade.value = r[20];
+      CampoPeriodo.value = r[21];
+      CampoAreaTrabalho.value = r[22];
+      CampoObservacoes.value = r[23];
+
+      M.updateTextFields();
+    }
+  }
+
+  // Função para o preenchimento dos campos ao selecionar o cpf de um pesquisador
+  CampoPesquisaCpf.addEventListener("change", PesquisarPeloCpf);
+
+  function PesquisarPeloCpf() {
+    let CpfPesquisador = CampoPesquisaCpf.value;
+
+    google.script.run.withSuccessHandler(Retorno).PesquisarPesquisadorCpf(CpfPesquisador);
+
+    function Retorno(r) {
+      if (r == "Pesquisador não encontrado!") {
+        Limpar();
+        var m = r;
+        caixaMsgbox(m);
+        return false;
+      }
+
+      CampoIdPesquisador.value = r[0];
+      CampoDataRegistro.value = r[1];
+      CampoPesquisador.value = r[2];
+      CampoNasc.value = r[3];
+      CampoSexo.value = r[4];
+      CampoCPF.value = r[5];
+      CampoNacionalidade.value = r[6];
+      CampoTelefone.value = r[7];
+      CampoEmail.value = r[8];
+      CampoEndereco.value = r[9];
+      CampoNumCasa.value = r[10];
+      CampoComplemento.value = r[11];
+      CampoBairro.value = r[12];
+      CampoCidade.value = r[13];
+      CampoEstado.value = r[14];
+      CampoFormacao.value = r[15];
+      CampoInstituicao.value = r[16];
+      CampoCurso.value = r[17];
+      CampoProfissao.value = r[18];
+      CampoAssunto.value = r[19];
+      CampoFinalidade.value = r[20];
+      CampoPeriodo.value = r[21]
+      CampoAreaTrabalho.value = r[22];
+      CampoObservacoes.value = r[23];
+
+      M.updateTextFields();
+    }
+  }
+
+  // Função para o botão editar
+  document.getElementById("btnEditar").addEventListener("click", Editar);
+
+function Editar() {
+
+    var ListaPesquisador = CampoListaPesquisador.value;
+    var PesquisaCpf = CampoPesquisaCpf.value;
+    var NomePesquisador = CampoPesquisador.value; 
+    var Nascimento = CampoNasc.value; 
+    var Sexo = CampoSexo.value;
+    var Cpf = CampoCPF.value;
+    var Nacionalidade = CampoNacionalidade.value; 
+    var Telefone = CampoTelefone.value; 
+    var Email = CampoEmail.value; 
+    var Endereco = CampoEndereco.value; 
+    var NumCasa = CampoNumCasa.value;
+    var Complemento = CampoComplemento.value;
+    var Bairro = CampoBairro.value; 
+    var Cidade = CampoCidade.value; 
+    var Estado = CampoEstado.value; 
+    var Formacao = CampoFormacao.value; 
+    var Instituicao = CampoInstituicao.value; 
+    var Curso = CampoCurso.value; 
+    var Profissao = CampoProfissao.value; 
+    var Assunto = CampoAssunto.value; 
+    var Finalidade = CampoFinalidade.value; 
+    var PeriodoEstudo = CampoPeriodo.value; 
+    var AreaTrabalho = CampoAreaTrabalho.value;
+    var Observacoes = CampoObservacoes.value;
+
+    var ListaPesquisador = ListaPesquisador.trim();
+    var Email = Email.trim();
+    var Endereco = Endereco.trim();
+    var NumCasa = NumCasa.trim();
+    var Complemento = Complemento.trim();
+    var Bairro = Bairro.trim();
+    var Cidade = Cidade.trim();
+    var Instituicao = Instituicao.trim();
+    var Curso = Curso.trim();
+    var Profissao = Profissao.trim();
+    var Assunto = Assunto.trim();
+    var Finalidade = Finalidade.trim();
+    var Observacoes = Observacoes.trim();
+
+    // A segunda condição abaixo está puxando do select do listaPesquisador 
+    if(ListaPesquisador == "" || ListaPesquisador == "Escolha um Pesquisador") {
+
+      var m = "Precisa selecionar pesquisador na lista!"
+      caixaMsgbox(m);
+      return false;
+
+    }
+
+    if(ListaPesquisador == "" || Sexo == "" || Cpf == "" || Telefone == "" || Email == "" || Endereco == "" || NumCasa == "" || Bairro == "" || Cidade == "" || Estado == "" ||  Profissao == "" || Assunto == "" || Finalidade == "") {
+      var m = "Precisa preencher todos os campos obrigatórios!"
+      caixaMsgbox(m);
+      return false;
+    }
+
+    var Dados = {
+      ListaPesquisador: ListaPesquisador,
+      PesquisaCpf: PesquisaCpf,
+      NomePesquisador: NomePesquisador,
+      Nascimento: Nascimento,
+      Sexo: Sexo,
+      Cpf: Cpf,
+      Nacionalidade: Nacionalidade,  
+      Telefone: Telefone,  
+      Email: Email,  
+      Endereco: Endereco,  
+      NumCasa: NumCasa,
+      Complemento: Complemento,
+      Bairro: Bairro,  
+      Cidade: Cidade,  
+      Estado: Estado,  
+      Formacao: Formacao,  
+      Instituicao: Instituicao,  
+      Curso: Curso,  
+      Profissao: Profissao,  
+      Assunto: Assunto,  
+      Finalidade: Finalidade,  
+      PeriodoEstudo: PeriodoEstudo,
+      AreaTrabalho: AreaTrabalho,  
+      Observacoes: Observacoes,
+    }
+
+    google.script.run.withSuccessHandler(Retorno).EditarPesquisador(Dados);
+
+    function Retorno(r) {
+      if(r != "Pesquisador não encontrado!") {
+        Limpar();
+        AtualizarPesquisadores();
+
+      }
+        var m = r;
+        caixaMsgbox(m);
+
+    }
+  }
+  
+
+
+  // Função para atualizar a lista dos pesquisadores
+  function AtualizarPesquisadores() {
+    // Limpar o HTML do datalist
+    document.getElementById("pesquisadores").innerHTML = '';
+
+    // Adicionar a opção padrão "Selecione um pesquisador"
+    var NovaOpcao = document.createElement("option");
+    NovaOpcao.value = "";  // Define o valor da opção
+    NovaOpcao.text = "Selecione um pesquisador";
+    document.getElementById("pesquisadores").appendChild(NovaOpcao);
+
+    // Chamar a função para obter a lista atualizada de pesquisadores
+    google.script.run.withSuccessHandler(Retorno).AtualizarListaPesquisadores();
+
+    function Retorno(pesquisadores) {
+      // Adicionar os pesquisadores ao datalist
+      pesquisadores.forEach(function(r) {
+        var NovaOpcao = document.createElement("option");
+        NovaOpcao.value = r[0];  // Define o valor da opção
+        NovaOpcao.text = r[0];
+        document.getElementById("pesquisadores").appendChild(NovaOpcao);
+      });
+    }
+  }
+
+ </script>

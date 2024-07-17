@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Chama o arquivo css -->
+    <?!=Chamar("EstilosCSS")?>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
+  </head>
+  <body>
+    <div id="CaixaMsg">
+      <div>
+        <div id="TituloMsg"></div>
+        <div id="CorpoMsg"></div>
+        <div id="RodapeMsg"></div>
+      </div>
+    </div>
+
+    <div class="objeto">
+      <fieldset style="border: 2px solid #ED9B40;">
+        <legend style="color: #ED9B40;"><strong>Campos para consultar pesquisador já cadastrado</strong></legend>
+      <div class="row">     
+        <div id="divListaPesquisador" class="col s6">
+            <label id="labelListaPesquisador" for="listaPesquisador" style="color: #ED9B40;">Pesquisa pelo Nome</label>
+            <input list="pesquisadores" id="listaPesquisador" class="browser-default" name="pesquisadorInput" style="color: #ED9B40;">
+            <datalist id="pesquisadores" style="color: #ED9B40;">
+              <option value="" disabled selected style="color: #ED9B40;">Selecione um pesquisador</option>
+            <!-- Carrega a lista através da função da MacrosPesquisador, executando js -->
+            <? for (let i = 0; i < list.length; i++) {?>
+               <!-- <option><?=list[i];?></option> -->
+               <option value="<?= list[i]; ?>">
+
+            <?}?>
+          </datalist>
+        </div>
+
+          <div class="input-field col s6">
+              <i class="material-icons prefix" style="color: #ED9B40;">account_circle</i>
+              <input type="text" id="CpfPesquisador" onkeydown = "MascaraPesquisaCpf(this)" minlength="14" maxlength="14" style="color: #ED9B40;">
+              <label for="CpfPesquisador" id="pesquisadores" style="color: #ED9B40;">Pesquisa pelo CPF</label> 
+          </div>
+       </div>
+
+
+        <legend style="color: #ED9B40;">Dados de registro de pesquisador já cadastrado</legend>
+        <hr>
+            <div class="row">     
+              <div class="input-field col s6">
+                  <i class="material-icons prefix" style="color: #ED9B40;">perm_identity</i>
+                  <input type="text" id="idPesquisador" style="color: #ED9B40;">
+                  <label for="IdPesquisador" style="color: #ED9B40;">Nº do Registro do Pesquisador</label>
+              </div>
+              <div class="input-field col s6">
+                  <i class="material-icons prefix" style="color: #ED9B40;">date_range</i>
+                  <input type="text" id="dataRegistro" keydown="MascaraDataRegistro(this)" minlength="10" maxlength="10" style="color: #ED9B40;">
+                  <label for="dataRegistro" style="color: #ED9B40;">Data da Criação do Registro</label>
+              </div>
+            </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Dados Pessoais</legend>
+
+          <div class="row">          
+              <div class="input-field col s6">
+                  <i class="material-icons prefix">perm_identity</i>
+                  <input type="text" id="nomePesquisador" oninput="CaixaAlta(event)">
+                  <label for="nomePesquisador" id="pesquisador">Nome completo *</label> 
+              </div>
+
+              <div class="input-field col s6">
+                  <i class="material-icons prefix">perm_identity</i>
+                  <input type="text" id="dataNasc" keydown="MascaraDataNascimento(this)" minlength="10" maxlength="10">
+                  <label for="dataNasc">Data de Nascimento *</label>
+              </div>
+
+              <div class="col s6">
+                <label>Sexo *</label>
+                <select id="sexo" class="browser-default">
+                  <option value="" disabled selected>Selecione um Sexo</option>
+                  <!-- Carrega a lista através da função da MacrosPesquisador, executando js -->
+                  <? for (let i = 0; i < list7.length; i++) {?>
+                    <option><?=list7[i];?></option>
+
+                  <?}?>
+                </select>
+              </div>
+
+              <div class="input-field col s6">
+                  <i class="material-icons prefix">perm_identity</i>
+                  <input type="text" id="cpf" onkeydown = "MascaraCpf(this)" minlength="14" maxlength="14">
+                  <label for="cpf">CPF *</label>
+              </div>
+
+              <div class="col s6">
+                  <label>Nacionalidade *</label>
+                  <select id="nacionalidade" class="browser-default">
+                    <option value="" disabled selected>Selecione uma Nacionalidade</option>
+                    <!-- Carrega a lista através da função da MacrosPesquisador, executando js -->
+                    <? for (let i = 0; i < list2.length; i++) {?>
+                      <option><?=list2[i];?></option>
+
+                    <?}?>
+                  </select>
+              </div>
+            <div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Contato</legend>
+            <div class="row">
+              <div class="input-field col s6">
+                  <i class="material-icons prefix">phone</i>
+                  <input type="tel" id="telefone" keydown = "MascaraTelefone(this)" minlength="16" maxlength="16">
+                  <label for="telefone">Telefone *</label>
+              </div>
+
+              <div class="input-field col s6">
+                  <i class="material-icons prefix">mail_outline</i>
+                  <input type="email" id="email">
+                  <label for="email">E-mail *</label>
+              </div>
+
+            <div class="input-field col s6">
+                  <i class="material-icons prefix">location_on</i>
+                  <input type="text" id="endereco" oninput="CaixaAlta(event)">
+                  <label for="endereco">Endereço *</label>
+              </div>
+
+              <div class="input-field col s6">
+                  <i class="material-icons prefix">location_on</i>
+                  <input type="text" id="numCasa" oninput="CaixaAlta(event)">
+                  <label for="numCasa">Número *</label>
+              </div>
+
+              <div class="input-field col s6">
+                  <i class="material-icons prefix">location_on</i>
+                  <input type="text" id="complemento" oninput="CaixaAlta(event)">
+                  <label for="complemento">Complemento</label>
+              </div>
+
+              <div class="input-field col s6">
+                  <i class="material-icons prefix">location_city</i>
+                  <input type="text" id="bairro" oninput="CaixaAlta(event)">
+                  <label for="bairro">Bairro *</label>
+              </div>
+
+              <div class="input-field col s6">
+                  <i class="material-icons prefix">location_city</i>
+                  <input type="text" id="cidade" oninput="CaixaAlta(event)">
+                  <label for="cidade">Cidade *</label>
+              </div>
+
+
+              <div class="col s6">
+                  <label>Estados *</label>
+                  <select id="estado" class="browser-default">
+                   <option value="" disabled selected>Selecione um Estado</option>
+                    <!-- Carrega a lista através da função da MacrosPesquisador, executando js -->
+                    <? for (let i = 0; i < list3.length; i++) {?>
+                      <option><?=list3[i];?></option>
+
+                    <?}?>
+                  </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Escolaridade e Profissão</legend>
+            <div class="row">
+              <div class="col s6">
+                  <label>Formação *</label>
+                   <select id="formacao" class="browser-default">
+                    <option value="" disabled selected>Selecione uma Formação</option>
+                    <!-- Carrega a lista através da função da MacrosPesquisador, executando js -->
+                    <? for (let i = 0; i < list4.length; i++) {?>
+                      <option><?=list4[i];?></option>
+
+                    <?}?>
+                   </select>
+              </div>
+
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">perm_identity</i>
+                    <input type="text" id="instituicao" oninput="CaixaAlta(event)">
+                    <label for="instituicao">Instituição de educação</label>
+                </div>
+                
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">perm_identity</i>
+                    <input type="text" id="curso" oninput="CaixaAlta(event)">
+                    <label for="curso">Curso</label>
+                </div>
+
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">work</i>
+                    <input type="text" id="profissao" oninput="CaixaAlta(event)">
+                    <label for="profissao">Profissão *</label>
+                </div>
+            </div>
+          </fieldset>
+
+            <fieldset>
+              <legend>Campo de Pesquisa</legend>
+              <div class="row">
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">subject</i>
+                    <input type="text" id="assunto" oninput="CaixaAlta(event)">
+                    <label for="assunto">Assunto da pesquisa *</label>
+                </div>
+
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">subject</i>
+                    <input type="text" id="finalidade" oninput="CaixaAlta(event)">
+                    <label for="finalidade">Finalidade da pesquisa *</label>
+                </div>
+
+                <div class="col s6">
+                  <label>Período de Estudo *</label>
+                   <select id="periodoEstudo" class="browser-default">
+                    <option value="" disabled selected>Selecione um Período de Estudo</option>
+                    <? for (let i = 0; i < list5.length; i++) {?>
+                      <option><?=list5[i];?></option>
+
+                    <?}?>
+                   </select>
+                </div>
+
+                 <div class="col s6">
+                    <label>Área de Estudo *</label>
+                    <select id="areaTrabalho" class="browser-default">
+                      <option value="" disabled selected>Selecione uma Área de Estudo</option>
+                      <!-- Carrega a lista através da função da MacrosPesquisador, executando js -->
+                      <? for (let i = 0; i < list6.length; i++) {?>
+                        <option><?=list6[i];?></option>
+
+                      <?}?>
+                    </select>
+                </div> 
+            </div>
+            </fieldset>
+            <fieldset>
+              <legend>Informações adicionais</legend>
+                <div class="input-field col s6">
+                    <i class="material-icons prefix">subject</i>
+                    <input type="text" id="observacoes" oninput="CaixaAlta(event)" placeholder="Adicione aqui demais informações adicionais sobre o pesquisador.">
+                    <label for="observacoes">Observações</label>
+                </div>
+            </fieldset>
+
+        </div>
+        <div class="row">
+
+          <button class="btn waves-effect waves-light espacamento-botoes" id="btnSalvar">Salvar
+              <i class="material-icons right">send</i>
+          </button>
+
+          <button class="btn waves-effect waves-light espacamento-botoes" id="btnLimpar">Limpar
+              <i class="material-icons right">send</i>
+          </button>
+
+          <button class="btn waves-effect waves-light espacamento-botoes" id="btnEditar">Editar
+              <i class="material-icons right">edit</i>
+          </button>
+
+          <!-- <button class="btn waves-effect waves-light" id="btnExcluir" onclick="MsgBoxExcluir()">Excluir
+              <i class="material-icons right">delete</i>
+          </button> -->
+
+          <button class="btn waves-effect waves-light espacamento-botoes" id="btnFechar">Fechar
+              <i class="material-icons right">close</i>
+          </button>
+    </div> 
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <!-- Chama o script js -->
+  <?!=Chamar("FormPesquisadores-js")?>
+  </body>
+</html>

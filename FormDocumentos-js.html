@@ -1,0 +1,600 @@
+<script>
+  var CampoPesquisaAcervo = document.getElementById("pesquisaListaAcervo");
+  var CampoPesquisaEspecie = document.getElementById("pesquisaListaEspecie")
+  var CampoPesquisaIdentificador1 = document.getElementById("pesquisaListaIdentificador1");
+  var CampoPesquisaIdentificador2 = document.getElementById("pesquisaListaIdentificador2");
+  var CampoPesquisaDocumento = document.getElementById("pesquisaDocumento");
+
+  var CampoListaAcervo = document.getElementById("ListaAcervos");
+  var CampoEspecieDocumental = document.getElementById("especieDocumental");
+  var CampoIdentificador1 = document.getElementById("identificador1");
+  var CampoIdentificador2 = document.getElementById("identificador2");
+  var CampoDocumento = document.getElementById("documento");
+  var CampoVolume = document.getElementById("quantidade");
+  var CampoPeriodo = document.getElementById("periodo");
+  var CampoLocal = document.getElementById("local");
+  var CampoObservacao = document.getElementById("observacao");
+
+  // Função para deixar as letras em caixa alta
+  function CaixaAlta(e){
+    var ss = e.target.selectionStart;
+    var se = e.target.selectionEnd;
+
+    e.target.value = e.target.value.toUpperCase();
+
+    e.target.selectionStart = ss;
+    e.target.selectionEnd = se;
+  }
+
+  // Para as mensagens das janelas dos botões
+  var CaixaMsg = document.getElementById("CaixaMsg");
+  var TituloMsg = document.getElementById("TituloMsg");
+  var CorpoMsg = document.getElementById("CorpoMsg");
+  var RodapeMsg = document.getElementById("RodapeMsg");
+
+  let BtnFechar = '<button class = "orange" onclick = "Fechar()" style = "cursor:pointer">'+
+  '<b><font color = "black" size = "5px">Fechar</font></b></button>';
+
+  function caixaMsgbox(m){
+    CaixaMsg.style.display = "block";
+    TituloMsg.innerHTML = "AVISO";
+    CorpoMsg.innerHTML = m; 
+    RodapeMsg.innerHTML = BtnFechar;
+  }
+  
+  function Fechar(){
+    CaixaMsg.style.display = "none";
+  }
+
+    // Função do botão limpar
+  document.getElementById("btnLimpar").addEventListener("click", Limpar);
+
+  function Limpar(){
+    CampoPesquisaAcervo.value = "";
+    CampoPesquisaEspecie.value = "";
+    CampoPesquisaIdentificador1.value = "";
+    CampoPesquisaIdentificador2.value = "";
+    CampoPesquisaDocumento.value = "";
+    CampoListaAcervo.value = "";
+    CampoEspecieDocumental.value = "";
+    CampoIdentificador1.value = "";
+    CampoIdentificador2.value = "";
+    CampoDocumento.value = "";
+    CampoVolume.value = "";
+    CampoPeriodo.value = "";
+    CampoLocal.value = "";
+    CampoObservacao.value = "";
+
+    M.updateTextFields();
+
+    var Opt = "Selecione uma espécie documental";
+    LimparLista(CampoPesquisaDocumento, Opt);
+    AtualizarAcervos();
+    }
+
+    // LImpar lista Documento
+    function LimparLista(Campo, Opt) {
+
+      while (Campo.length) {
+        Campo.remove(0);
+      }
+      var NovaOpcao = document.createElement("option");
+      var Texto = document.createTextNode(Opt);
+      NovaOpcao.appendChild(Texto);
+      Campo.insertBefore(NovaOpcao, Campo.lastChild);
+      
+      Campo.options[0].disabled = true; 
+
+    }
+
+    // Função para o botão de fechar a janela de cadastro
+    document.getElementById("btnFechar").addEventListener("click", FecharJanela);
+    function FecharJanela() {
+      google.script.host.close();
+    }
+    // Função para carregar lista suspensa dependente da espécies
+
+    CampoPesquisaAcervo.addEventListener("input", CarregarEspecies);
+
+    function CarregarEspecies(){
+
+      CampoListaAcervo.value = CampoPesquisaAcervo.value;
+
+      M.updateTextFields();
+
+      var Opt = "Selecione uma espécie documental";
+      LimparLista(CampoPesquisaEspecie,Opt);
+      // Capturar a linha selecionada pelo usuário
+      var Acervo = CampoListaAcervo.value;
+
+      google.script.run.withSuccessHandler(Retorno).ListaEspecies(Acervo);
+
+  function Retorno(especies){
+      // Contém a lista de especies retornada
+      especies.forEach(function(r){
+          // Carregar as opções da lista
+          var NovaOpcao = document.createElement("option");
+          var Texto = document.createTextNode(r[0]);
+          NovaOpcao.appendChild(Texto);
+
+          CampoPesquisaEspecie.insertBefore(NovaOpcao, CampoPesquisaEspecie.lastChild);
+      });
+  }
+    // CarregarIdentificador1();
+}
+
+// Função para carregar lista suspensa dependente dos identificador1
+
+CampoPesquisaEspecie.addEventListener("input", CarregarIdentificador1);
+
+function CarregarIdentificador1() {
+    CampoListaAcervo.value = CampoPesquisaAcervo.value;
+    CampoEspecieDocumental.value = CampoPesquisaEspecie.value;
+    CampoIdentificador1.value = "";
+    M.updateTextFields();
+
+    var Opt = "Selecione a primeira codificação";
+    LimparLista(CampoPesquisaIdentificador1, Opt);
+
+    // Capturar a espécie documental selecionada pelo usuário
+    var Especie = CampoEspecieDocumental.value;
+    var Acervo = CampoListaAcervo.value;
+
+    google.script.run.withSuccessHandler(Retorno).ListaIdentificador1(Acervo, Especie);
+
+    function Retorno(identificador1) {
+        // Contém a lista de identificadores retornada
+        LimparLista(CampoPesquisaIdentificador1, Opt);
+
+        identificador1.forEach(function (r) {
+            // Carregar as opções da lista
+            var NovaOpcao = document.createElement("option");
+            var Texto = document.createTextNode(r[0]);
+            NovaOpcao.appendChild(Texto);
+
+            CampoPesquisaIdentificador1.insertBefore(NovaOpcao, CampoPesquisaIdentificador1.lastChild);
+        });
+    }
+}
+
+
+// Função para carregar lista suspensa dependente dos identificador2
+
+CampoPesquisaIdentificador1.addEventListener("input", CarregarIdentificador2);
+
+function CarregarIdentificador2() {
+
+    CampoListaAcervo.value = CampoPesquisaAcervo.value;
+    CampoEspecieDocumental.value = CampoPesquisaEspecie.value;
+    CampoIdentificador1.value = CampoPesquisaIdentificador1.value;
+    CampoIdentificador2.value = "";
+    M.updateTextFields();
+
+    var Opt = "Selecione a segunda codificação";
+    LimparLista(CampoPesquisaIdentificador2, Opt);
+
+    // Capturar a espécie documental selecionada pelo usuário
+    var Acervo = CampoListaAcervo.value;
+    var Especie = CampoEspecieDocumental.value;
+    var Identificador1 = CampoIdentificador1.value;
+
+    google.script.run.withSuccessHandler(Retorno).ListaIdentificador2(Acervo, Especie, Identificador1);
+
+    function Retorno(identificador2) {
+        // Contém a lista de identificadores retornada
+        LimparLista(CampoPesquisaIdentificador2, Opt);
+
+        identificador2.forEach(function (r) {
+            // Carregar as opções da lista
+            var NovaOpcao = document.createElement("option");
+            var Texto = document.createTextNode(r[0]);
+            NovaOpcao.appendChild(Texto);
+
+            CampoPesquisaIdentificador2.insertBefore(NovaOpcao, CampoPesquisaIdentificador2.lastChild);
+        });
+    }
+}
+
+// Função para carregar lista suspensa dependente dos documentos
+
+CampoPesquisaIdentificador2.addEventListener("input", CarregarDocumento);
+
+function CarregarDocumento() {
+    CampoListaAcervo.value = CampoPesquisaAcervo.value;
+    CampoEspecieDocumental.value = CampoPesquisaEspecie.value;
+    CampoIdentificador1.value = CampoPesquisaIdentificador1.value;
+    CampoIdentificador2.value = CampoPesquisaIdentificador2.value;
+    CampoDocumento.value = "";
+    M.updateTextFields();
+
+    var Opt = "Selecione o documento";
+    LimparLista(CampoPesquisaDocumento, Opt);
+
+    // Capturar a espécie documental selecionada pelo usuário
+
+
+    var Acervo = CampoListaAcervo.value;
+    var Especie = CampoEspecieDocumental.value;
+    var Identificador1 = CampoIdentificador1.value;
+    var Identificador2 = CampoIdentificador2.value;
+
+    google.script.run.withSuccessHandler(Retorno).ListaDocumento(Acervo, Especie, Identificador1, Identificador2);
+
+    function Retorno(documento) {
+        // Contém a lista de identificadores retornada
+        LimparLista(CampoPesquisaDocumento, Opt);
+
+        documento.forEach(function (r) {
+            // Carregar as opções da lista
+            var NovaOpcao = document.createElement("option");
+            var Texto = document.createTextNode(r[0]);
+            NovaOpcao.appendChild(Texto);
+
+            CampoPesquisaDocumento.insertBefore(NovaOpcao, CampoPesquisaDocumento.lastChild);
+        });
+    }
+}
+
+  // Função para salvar na planilha
+  document.getElementById("btnSalvar").addEventListener("click", Salvar);
+  
+  function Salvar() {
+
+    var CampoPesquisaAcervo =  CampoListaAcervo.value;
+    var CampoPesquisaIdentificador1 =  CampoIdentificador1.value;
+    var CampoPesquisaIdentificador2 = CampoIdentificador2.value;
+    var CampoPesquisaEspecie = CampoEspecieDocumental.value;
+    var CampoPesquisaDocumento = CampoDocumento.value;
+    var Acervo = CampoListaAcervo.value;
+    var EspecieDocumental = CampoEspecieDocumental.value;
+    var Identificador1 = CampoIdentificador1.value;
+    var Identificador2 = CampoIdentificador2.value;
+    var Documento = CampoDocumento.value;
+    var Periodo = CampoPeriodo.value;
+    var Volume = CampoVolume.value;
+    var Local = CampoLocal.value;
+    var Observacao = CampoObservacao.value;
+    
+    // Tirando espaçamentos
+    var Identificador1 = Identificador1.trim();
+    var Identificador2 = Identificador2.trim();
+    var EspecieDocumental = EspecieDocumental.trim(); 
+    var Documento = Documento.trim();
+    var Periodo = Periodo.trim();
+    var Volume = Volume.trim();
+    var Local = Local.trim();
+    var Observacao = Observacao.trim();
+      
+
+        // Condição para preenchimento obrigatório dos dados
+      if (Acervo == "" || EspecieDocumental == "" || Identificador1 == "" || Identificador2 == "" || Documento == "" || Periodo == "" || Volume == "" || Local == "") {
+        
+        let m = "Precisa preencher todos os campos!"
+        caixaMsgbox(m);
+        return false;
+      }
+      
+    let Dados ={
+          Acervo: Acervo,
+          Identificador1: Identificador1,
+          Identificador2: Identificador2,
+          EspecieDocumental: EspecieDocumental,
+          Documento: Documento,
+          Periodo: Periodo,
+          Volume: Volume,
+          Local: Local,
+          Observacao: Observacao,
+        };
+
+        // A função irá para o arquivo .gs
+        google.script.run.withSuccessHandler(Retorno).SalvarDocumento(Dados);
+
+        function Retorno(r) {
+          let m = r;
+          caixaMsgbox(m);
+          Limpar();
+          // Se registrado com sucesso, irá limpar os dados posteriormente
+        //   if(r == "Documento/Códice registrado com sucesso!") {
+        //     Limpar();
+        //   }
+        }
+      }
+  
+  // Função para aceitar apenas números ao digitar
+    // CampoIdentificador2.addEventListener("keypress",Ver);
+
+    // function Ver(e){
+
+    //   var Caracteres = String.fromCharCode(e.keyCode);
+
+    //   var Permitir = '[0-9,]';
+
+    //   if(Caracteres.match(Permitir)){
+    //     return true;
+    //     }else{
+    //     e.preventDefault();
+    //   }
+    // }
+
+    // Atualizar acervos 
+      function AtualizarAcervos(){
+
+      Opt = "Selecione um acervo";
+      LimparLista(CampoPesquisaAcervo,Opt);
+
+      google.script.run.withSuccessHandler(Retorno).AtualizarListaAcervos();
+
+      function Retorno(linhas){
+
+          linhas.forEach(function(r){
+
+            var NovaOpcao = document.createElement("option");
+            var Texto = document.createTextNode(r[0]);
+            NovaOpcao.appendChild(Texto);
+            CampoPesquisaAcervo.insertBefore(NovaOpcao, CampoPesquisaAcervo.lastChild);
+
+        });
+      }
+    }
+
+
+    // Função de pesquisar espécie
+    
+    CampoPesquisaEspecie.addEventListener("input",EspeciePesquisa);
+
+    function EspeciePesquisa(){
+
+      var Acervo = CampoPesquisaAcervo.value;
+      var EspecieDocumental = CampoPesquisaEspecie.value;
+      var Identificador1 = CampoPesquisaIdentificador1.value;
+      var Identificador2 = CampoPesquisaIdentificador2.value;
+      var Documento = CampoPesquisaDocumento.value;
+
+      var Dados = {
+        Acervo: Acervo,
+        EspecieDocumental: EspecieDocumental,
+        Identificador1: Identificador1,
+      }
+
+      google.script.run.withSuccessHandler(Retorno).PesquisarEspecie(Dados);
+
+      function Retorno(r){
+
+          if(r == "NÃO ENCONTRADO!"){
+              var m = r;
+              caixaMsgbox(m);
+              return false;
+          }
+
+          CampoEspecieDocumental.value = CampoPesquisaEspecie.value;
+          CampoIdentificador1.value = CampoPesquisaIdentificador1.value;
+
+          M.updateTextFields();
+      }
+    }
+
+
+       // Função de pesquisar id1
+    
+    CampoPesquisaIdentificador1.addEventListener("input",PesquisaIdentificador1);
+
+    function PesquisaIdentificador1(){
+
+      var Acervo = CampoPesquisaAcervo.value;
+      var EspecieDocumental = CampoPesquisaEspecie.value;
+      var Identificador1 = CampoPesquisaIdentificador1.value;
+      var Identificador2 = CampoPesquisaIdentificador2.value;
+      var Documento = CampoPesquisaDocumento.value;
+
+       var Dados = {
+        Acervo: Acervo,
+        EspecieDocumental: EspecieDocumental,
+        // Identificador1: Identificador1,
+        // Identificador2: Identificador2,
+        // Documento: Documento,
+      }
+
+      google.script.run.withSuccessHandler(Retorno).PesquisarIdentificador1(Dados);
+
+      function Retorno(r){
+
+          if(r == "NÃO ENCONTRADO!"){
+              var m = r;
+              caixaMsgbox(m);
+              return false;
+          }
+
+          CampoEspecieDocumental.value = CampoPesquisaEspecie.value;
+          CampoIdentificador1.value = CampoPesquisaIdentificador1.value;
+          CampoIdentificador2.value = CampoPesquisaIdentificador2.value;
+
+          M.updateTextFields();
+      }
+    }
+
+    // Função de pesquisar id2
+    
+    CampoPesquisaIdentificador2.addEventListener("input",PesquisaIdentificador2);
+
+    function PesquisaIdentificador2(){
+
+      var Acervo = CampoPesquisaAcervo.value;
+      var EspecieDocumental = CampoPesquisaEspecie.value;
+      var Identificador1 = CampoPesquisaIdentificador1.value;
+      var Identificador2 = CampoPesquisaIdentificador2.value;
+      var Documento = CampoPesquisaDocumento.value;
+
+      var Dados = {
+        Acervo: Acervo,
+        EspecieDocumental: EspecieDocumental,
+        Identificador1: Identificador1,
+      }
+
+      google.script.run.withSuccessHandler(Retorno).PesquisarIdentificador2(Dados);
+
+      function Retorno(r){
+
+          if(r == "NÃO ENCONTRADO!"){
+              var m = r;
+              caixaMsgbox(m);
+              return false;
+          }
+
+          CampoEspecieDocumental.value = CampoPesquisaEspecie.value;
+          CampoIdentificador1.value = CampoPesquisaIdentificador1.value;
+          CampoIdentificador2.value = CampoPesquisaIdentificador2.value;
+          CampoDocumento.value = CampoPesquisaDocumento.value;
+
+          M.updateTextFields();
+      }
+    }
+
+    // Função de pesquisar documento
+    
+    CampoPesquisaDocumento.addEventListener("input",PesquisaDocumento);
+
+    function PesquisaDocumento(){
+
+      var Acervo = CampoPesquisaAcervo.value;
+      var EspecieDocumental = CampoPesquisaEspecie.value;
+      var Identificador1 = CampoPesquisaIdentificador1.value;
+      var Identificador2 = CampoPesquisaIdentificador2.value;
+      var Documento = CampoPesquisaDocumento.value;
+
+      if(Acervo == ""){
+          var m = "Selecione um acervo para pesquisar.";
+          caixaMsgbox(m);
+          return false;
+      }
+
+      if(EspecieDocumental == ""){
+          var m = "Selecione uma espécie documental.";
+          caixaMsgbox(m);
+          return false;
+      }
+
+      if(Identificador1 == ""){
+          var m = "Selecione o primeiro identificador.";
+          caixaMsgbox(m);
+          return false;
+      }
+
+      if(Identificador2 == ""){
+          var m = "Selecione o segundo identificador.";
+          caixaMsgbox(m);
+          return false;
+      }
+
+      if(Documento == ""){
+          var m = "Selecione um documento.";
+          caixaMsgbox(m);
+          return false;
+      }
+
+      var Dados = {
+        Acervo: Acervo,
+        EspecieDocumental: EspecieDocumental,
+        Identificador1: Identificador1,
+        Identificador2: Identificador2,
+        Documento: Documento,
+
+      }
+
+      google.script.run.withSuccessHandler(Retorno).PesquisarDocumento(Dados);
+
+      function Retorno(r){
+
+          if(r == "NÃO ENCONTRADO!"){
+              var m = r;
+              caixaMsgbox(m);
+              return false;
+          }
+
+          CampoDocumento.value = CampoPesquisaDocumento.value;
+          CampoPeriodo.value = r[5];
+          CampoVolume.value = r[6];
+          CampoLocal.value = r[7];
+          CampoObservacao.value = r[8];
+
+          M.updateTextFields();
+      }
+    }
+
+    // Função de edição
+    document.getElementById("btnEditar").addEventListener("click",Editar);
+
+    function Editar(){
+
+        // Pegando as informações dos campos de pesquisa
+        var PesquisaAcervo = CampoPesquisaAcervo.value;
+        var PesquisaEspecie = CampoPesquisaEspecie.value;
+        var PesquisaId1 = CampoPesquisaIdentificador1.value;
+        var PesquisaId2 = CampoPesquisaIdentificador2.value;
+        var PesquisaDocumento = CampoPesquisaDocumento.value;
+
+        // Pegando informações do campo de preenchimento
+
+        var Acervo = CampoListaAcervo.value;
+        var EspecieDocumental = CampoEspecieDocumental.value;
+        var Identificador1 = CampoIdentificador1.value;
+        var Identificador2 = CampoIdentificador2.value;
+        var Documento = CampoDocumento.value;
+        var Volume = CampoVolume.value;
+        var Periodo = CampoPeriodo.value;
+        var Local = CampoLocal.value;
+        var Observacao = CampoObservacao.value; 
+
+
+        // Limpando as variáveis
+        var Acervo = Acervo.trim();
+        var EspecieDocumental = EspecieDocumental.trim();
+        var Identificador1 = Identificador1.trim();
+        var Identificador2 = Identificador2.trim();
+        var Documento = Documento.trim();
+        var Volume = Volume.trim();
+        var Periodo = Periodo.trim();
+        var Local = Local.trim();
+        var Observacao = Observacao.trim();
+
+        if(PesquisaAcervo == "" || PesquisaEspecie == "" || PesquisaId1 == "" || PesquisaId2 == "" || PesquisaDocumento == "") {
+          var m = "Precisa selecionar todos os campos do campo de pesquisa!";
+          caixaMsgbox(m);
+          return false;
+        }
+
+        if (Acervo == "" || EspecieDocumental == "" || Identificador1 == "" || Identificador2 == "" || Documento == "" || Volume == "" || Periodo  == "" || Local == ""){
+          var m = "Precisa preencher todos os campos obrigatórios!";
+          caixaMsgbox(m);
+          return false;
+        }
+
+        var Dados = {
+          PesquisaAcervo: PesquisaAcervo,
+          PesquisaEspecie: PesquisaEspecie,
+          PesquisaId1: PesquisaId1,
+          PesquisaId2: PesquisaId2,
+          PesquisaDocumento: PesquisaDocumento,
+          Acervo: Acervo,
+          EspecieDocumental: EspecieDocumental,
+          Identificador1: Identificador1,
+          Identificador2: Identificador2,
+          Documento: Documento,
+          Volume: Volume,
+          Periodo: Periodo,
+          Local: Local,
+          Observacao: Observacao,
+        }
+
+        google.script.run.withSuccessHandler(Retorno).EditarDocumento(Dados);
+
+        function Retorno(r){
+          var m = r;
+          caixaMsgbox(m);
+          Limpar();
+        }
+
+
+    }
+
+
+</script>
