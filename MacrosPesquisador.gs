@@ -241,6 +241,7 @@ function EditarPesquisador(Dados) {
     for(var i = 0; i < DadosPesquisador.length; i++){
       if(DadosPesquisador[i][0] == Dados.ListaPesquisador || DadosPesquisador[i][2] == Dados.PesquisaCpf){
         let Linha = i + 2;
+        GuiaPesquisador.getRange(Linha, 3).setValue(Dados.NomePesquisador);
         GuiaPesquisador.getRange(Linha, 4).setValue(Dados.Nascimento);
         GuiaPesquisador.getRange(Linha, 5).setValue(Dados.Sexo);
         GuiaPesquisador.getRange(Linha, 6).setValue(Dados.Cpf);
